@@ -5,3 +5,5 @@
 
 - [2026-04-15 09:15:10] feat(chat-core): llm streaming orchestrator with multi-provider failover
 
+- [2026-04-15 11:40:20] feat(agents): multi-agent collaborative workspace and agent persona router
+
