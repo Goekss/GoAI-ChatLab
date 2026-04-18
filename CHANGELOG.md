@@ -17,3 +17,5 @@
 
 - [2026-04-16 18:35:10] feat(markdown): rich latex math rendering and syntax-highlighted code runner
 
+- [2026-04-18 09:50:12] feat(audio): voice-to-text whisper transcription and speech synthesis stream
+
