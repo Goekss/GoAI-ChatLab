@@ -23,3 +23,5 @@
 
 - [2026-04-18 18:35:10] feat(auth): api key rotation, rate-limiting tier and per-user token quotas
 
+- [2026-04-22 09:50:12] fix(streaming): prevent buffer truncation on high-frequency chunk arrival
+
