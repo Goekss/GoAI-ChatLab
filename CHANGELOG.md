@@ -41,3 +41,5 @@
 
 - [2026-04-26 18:35:10] test(agents): end-to-end multi-agent consensus task execution tests
 
+- [2026-04-27 11:40:20] docs: comprehensive architectural overview and api integration examples
+
