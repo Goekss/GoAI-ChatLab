@@ -47,3 +47,5 @@
 
 - [2026-05-06 11:40:20] feat(agents): multi-agent collaborative workspace and agent persona router
 
+- [2026-05-09 09:50:12] feat(rag): vector embedding search with qdrant hybrid dense-sparse retrieval
+
