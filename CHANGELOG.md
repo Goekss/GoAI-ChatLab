@@ -53,3 +53,5 @@
 
 - [2026-05-09 18:35:10] feat(tools): dynamic function calling sandbox with python execution container
 
+- [2026-05-10 09:50:12] feat(memory): conversational memory compaction and semantic session buffer
+
