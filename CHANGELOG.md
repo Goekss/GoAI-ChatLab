@@ -61,3 +61,5 @@
 
 - [2026-05-11 11:40:20] feat(eval): automated prompt evaluation suite and benchmark regression tests
 
+- [2026-05-14 11:40:20] feat(auth): api key rotation, rate-limiting tier and per-user token quotas
+
