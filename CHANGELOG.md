@@ -65,3 +65,5 @@
 
 - [2026-05-15 09:15:10] fix(streaming): prevent buffer truncation on high-frequency chunk arrival
 
+- [2026-05-15 11:40:20] fix(tools): enforce strict json schema validation on function call arguments
+
