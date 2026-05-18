@@ -75,3 +75,5 @@
 
 - [2026-05-18 14:25:30] perf(vector): optimize cosine similarity search index batch ingestion
 
+- [2026-05-18 18:35:10] style(ui): futuristic dark-mode terminal layout with animated glow accents
+
