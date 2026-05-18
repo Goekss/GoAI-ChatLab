@@ -71,3 +71,5 @@
 
 - [2026-05-15 18:45:45] refactor(services): decouple model provider adapters with standard interface
 
+- [2026-05-18 09:50:12] refactor(cache): implement semantic cache layer for identical prompt queries
+
