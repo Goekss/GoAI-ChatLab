@@ -107,3 +107,5 @@
 
 - [2026-05-24 18:35:10] fix(tools): enforce strict json schema validation on function call arguments
 
+- [2026-05-25 10:30:15] fix(websocket): reconnect gracefully on ephemeral connection drop
+
