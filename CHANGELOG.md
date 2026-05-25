@@ -109,3 +109,5 @@
 
 - [2026-05-25 10:30:15] fix(websocket): reconnect gracefully on ephemeral connection drop
 
+- [2026-05-25 16:45:40] refactor(services): decouple model provider adapters with standard interface
+
