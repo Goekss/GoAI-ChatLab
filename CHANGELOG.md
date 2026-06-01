@@ -119,3 +119,5 @@
 
 - [2026-05-30 18:35:10] style(chat): smooth token streaming word animation and auto-scroll behavior
 
+- [2026-06-01 09:15:10] test(agents): end-to-end multi-agent consensus task execution tests
+
