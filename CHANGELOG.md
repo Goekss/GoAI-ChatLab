@@ -135,3 +135,5 @@
 
 - [2026-06-07 11:40:20] feat(memory): conversational memory compaction and semantic session buffer
 
+- [2026-06-08 10:30:15] feat(markdown): rich latex math rendering and syntax-highlighted code runner
+
