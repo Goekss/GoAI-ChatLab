@@ -139,3 +139,5 @@
 
 - [2026-06-08 16:45:40] feat(audio): voice-to-text whisper transcription and speech synthesis stream
 
+- [2026-06-12 09:50:12] feat(eval): automated prompt evaluation suite and benchmark regression tests
+
