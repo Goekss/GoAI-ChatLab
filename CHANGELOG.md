@@ -163,3 +163,5 @@
 
 - [2026-06-23 15:20:35] docs: comprehensive architectural overview and api integration examples
 
+- [2026-06-23 18:45:45] feat(chat-core): llm streaming orchestrator with multi-provider failover
+
