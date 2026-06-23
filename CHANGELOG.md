@@ -157,3 +157,5 @@
 
 - [2026-06-22 11:40:20] style(ui): futuristic dark-mode terminal layout with animated glow accents
 
+- [2026-06-23 09:15:10] style(chat): smooth token streaming word animation and auto-scroll behavior
+
