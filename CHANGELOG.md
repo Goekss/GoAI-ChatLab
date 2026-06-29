@@ -171,3 +171,5 @@
 
 - [2026-06-29 09:50:12] feat(tokens): real-time token throughput metrics and latency telemetry
 
+- [2026-06-29 14:25:30] feat(tools): dynamic function calling sandbox with python execution container
+
