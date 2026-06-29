@@ -169,3 +169,5 @@
 
 - [2026-06-27 16:45:40] feat(rag): vector embedding search with qdrant hybrid dense-sparse retrieval
 
+- [2026-06-29 09:50:12] feat(tokens): real-time token throughput metrics and latency telemetry
+
