@@ -1,0 +1,5 @@
+*.css linguist-vendored
+*.min.css linguist-vendored
+*.scss linguist-vendored
+build/** linguist-vendored
+dist/** linguist-vendored
