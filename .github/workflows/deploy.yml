@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -23,19 +23,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies (clean registry resolution)
-        run: npm install --no-package-lock --legacy-peer-deps --no-audit
-
-      - name: Build React App
-        run: npm run build
-        env:
-          CI: false
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

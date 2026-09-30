@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/GoAI-ChatLab/static/css/main.7e0d1bf2.css",
+    "main.js": "/GoAI-ChatLab/static/js/main.89eb08c9.js",
+    "static/js/453.a1b08853.chunk.js": "/GoAI-ChatLab/static/js/453.a1b08853.chunk.js",
+    "index.html": "/GoAI-ChatLab/index.html",
+    "main.7e0d1bf2.css.map": "/GoAI-ChatLab/static/css/main.7e0d1bf2.css.map",
+    "main.89eb08c9.js.map": "/GoAI-ChatLab/static/js/main.89eb08c9.js.map",
+    "453.a1b08853.chunk.js.map": "/GoAI-ChatLab/static/js/453.a1b08853.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7e0d1bf2.css",
+    "static/js/main.89eb08c9.js"
+  ]
+}
