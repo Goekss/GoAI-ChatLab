@@ -38,15 +38,24 @@ jobs:
         env:
           CI: false
 
+      - name: Determine build output folder
+        id: build_dir
+        run: |
+          if [ -d "dist" ]; then
+            echo "out_dir=dist" >> $GITHUB_OUTPUT
+          elif [ -d "build" ]; then
+            echo "out_dir=build" >> $GITHUB_OUTPUT
+          else
+            echo "out_dir=." >> $GITHUB_OUTPUT
+          fi
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: |
-            dist
-            build
+          path: ${{ steps.build_dir.outputs.out_dir }}
 
       - name: Deploy to GitHub Pages
         id: deployment
