@@ -28,16 +28,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm install --legacy-peer-deps --no-audit
 
-      - name: Build React App with explicit PUBLIC_URL
+      - name: Build React App
         run: npm run build
         env:
           CI: false
-          PUBLIC_URL: /GoAI-ChatLab
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
