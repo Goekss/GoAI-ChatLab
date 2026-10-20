@@ -26,7 +26,7 @@ Modern, hızlı ve çok fonksiyonlu bir yapay zeka deneyimi. **GoAI**, OpenRoute
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=fff)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)
-![Hugging Face](https://img.shields.io/badge/Hugging%20Face-FFD21E?logo=huggingface&logoColor=black)
+![Vercel](https://img.shields.io/badge/Vercel-%23000000.svg?logo=vercel&logoColor=white)
 ![OpenRouter](https://img.shields.io/badge/OpenRouter-94A3B8?logo=openrouter&logoColor=fff)
 ![Visual Studio Code](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%20Code-0078d7.svg?logo=visualstudiocode&logoColor=white)
 ![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?logo=github&logoColor=white)
@@ -41,12 +41,12 @@ Modern, hızlı ve çok fonksiyonlu bir yapay zeka deneyimi. **GoAI**, OpenRoute
 
 - **📁 Akıllı Belge Analizi:** PDF, Word (.docx), Excel (.xlsx, .xls) ve CSV dosyalarının içeriğini otomatik olarak ayıklayıp AI'ya analiz için sunar.
 - **🖼️ Vision (Görsel Okuma):** Resim dosyalarını (.png, .jpg, .webp) Vision destekli modellerle doğrudan analiz eder.
-- **🤖 Çoklu Model Seçimi:** Sidebar üzerinden OpenRouter'daki en iyi (StepFun, Qwen, Llama vb.) modeller arasında dinamik geçiş imkanı.
+- **🤖 Çoklu Model Seçimi:** Sidebar üzerinden OpenRouter'daki ücretsiz (MiniMax, Nemotron, Cohere North, Gemma vb.) modeller arasında dinamik geçiş imkanı.
 - **⚙️ Dinamik Sistem Talimatları:** AI'nın kişiliğini ve davranışını anlık olarak "System Anweisung" üzerinden yapılandırabilme.
 - **📜 Yerel Hafıza (History):** Tüm sohbet geçmişi tarayıcı hafızasında saklanır; oturumları isimlendirebilir veya yönetebilirsiniz.
 - **🎨 Glassmorphism Tasarım:** Vanilla CSS ile tasarlanmış, modern, şeffaf ve premium bir kullanıcı arayüzü.
 - **🔒 Güvenli Veri Akışı:** API anahtarı yalnızca sunucu tarafında tutulur (yerel `server/.env`, üretimde sunucu-tarafı secret — Vercel/Cloudflare). Tarayıcıya asla inmez; istekler güvenli proxy üzerinden iletilir.
-- **🐳 Bulut Hazır:** Docker desteği sayesinde Hugging Face Spaces üzerinden 7/24 erişilebilir.
+- **🐳 Bulut Hazır:** Frontend GitHub Pages te, güvenli proxy Vercel de — 7/24 erişilebilir.
 
 ---
 
@@ -56,7 +56,7 @@ Modern, hızlı ve çok fonksiyonlu bir yapay zeka deneyimi. **GoAI**, OpenRoute
 - **Backend:** [Node.js](https://nodejs.org), [Express.js](https://expressjs.com), Fetch API (native), CORS, dotenv.
 - **Dosya İşleme:** [pdfjs-dist](https://mozilla.github.io/pdf.js/) (PDF), [xlsx](https://sheetjs.com) (Excel), [mammoth](https://github.com/mwilliamson/mammoth.js) (Word).
 - **AI Entegrasyonu:** [OpenRouter AI API](https://openrouter.ai).
-- **DevOps & Dağıtım:** Docker, GitHub Actions (CI/CD Pipeline), Hugging Face Spaces.
+- **DevOps & Dağıtım:** Vercel (serverless proxy), GitHub Pages, GitHub Actions (CI/CD), Docker.
 - **UI & Markdown:** [React Markdown](https://github.com/remarkjs/react-markdown), [Highlight.js](https://highlightjs.org).
 
 ---
@@ -68,7 +68,7 @@ Modern, hızlı ve çok fonksiyonlu bir yapay zeka deneyimi. **GoAI**, OpenRoute
 *   **Dinamik Sohbet Deneyimi:** Her türlü görev için (kod yazma, yaratıcı metin, veri analizi) en uygun modeli seçerek sohbeti anında başlatabilirsiniz.
 *   **Bağlamsal Belge Analizi:** Dökümanlarınızı veya görsellerinizi sisteme tanıtarak, yapay zekanın bu veriler üzerinde derinlemesine analiz yapmasını sağlayın.
 *   **Özelleştirilebilir Yapay Zeka Kimliği:** "System Anweisung" panelini kullanarak asistanınızın uzmanlık alanını ve konuşma tarzını dilediğiniz gibi yapılandırın.
-*   **Bağımsız Veri Güvenliği:** Tüm veri trafiği yerel bir proxy üzerinden yönetilir, bu da API anahtarınızın güvenliğini ve dökümanların hızlı işlenmesini sağlar.
+*   **Bağımsız Veri Güvenliği:** Tüm veri trafiği güvenli bir sunucu-taraflı proxy üzerinden yönetilir, bu da API anahtarınızın güvenliğini ve dökümanların hızlı işlenmesini sağlar.
 
 **İpuçları:**
 - **System Prompt:** Sidebar'daki "System Anweisung" alanından AI'nın nasıl davranması gerektiğini belirleyebilirsiniz (Örn: "Kısa ve öz cevap ver").
@@ -81,7 +81,7 @@ Modern, hızlı ve çok fonksiyonlu bir yapay zeka deneyimi. **GoAI**, OpenRoute
 
 #### 1. Sunucu Tarafı (Backend)
 ```bash
-cd react-ai/server
+cd server
 npm install
 ```
 `server/.env` dosyanızı oluşturun ve API keyinizi ekleyin:
@@ -95,7 +95,6 @@ node server.js
 #### 2. İstemci Tarafı (Frontend)
 Yeni bir terminalde:
 ```bash
-cd react-ai
 npm install
 npm start
 ```
@@ -106,7 +105,12 @@ npm start
 
 ```bash
 react-ai/
-├── server/             # Node.js Proxy Sunucusu
+├── api/                # Vercel serverless proxy (Node.js, /chat)
+│   └── chat.mjs        # OpenRouter proxy + :free model koruması
+├── worker/             # Cloudflare Worker (opsiyonel proxy)
+│   └── worker.js       # :free model + max_price 0 koruması
+├── vercel.json         # /chat -> /api/chat yönlendirmesi
+├── server/             # Node.js Proxy Sunucusu (yerel geliştirme)
 │   ├── server.js       # Ana sunucu dosyası
 │   └── .env            # API Key konfigürasyonu
 ├── src/                # React Frontend
@@ -148,7 +152,7 @@ Eine moderne, schnelle und multifunktionale KI-Erfahrung. **GoAI** integriert di
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=fff)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)
-![Hugging Face](https://img.shields.io/badge/Hugging%20Face-FFD21E?logo=huggingface&logoColor=black)
+![Vercel](https://img.shields.io/badge/Vercel-%23000000.svg?logo=vercel&logoColor=white)
 ![OpenRouter](https://img.shields.io/badge/OpenRouter-94A3B8?logo=openrouter&logoColor=fff)
 ![Visual Studio Code](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%20Code-0078d7.svg?logo=visualstudiocode&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?logo=github-actions&logoColor=white)
@@ -163,12 +167,12 @@ Eine moderne, schnelle und multifunktionale KI-Erfahrung. **GoAI** integriert di
 
 - **📁 Intelligente Dokumentenanalyse:** Extrahiert automatisch Inhalte aus PDF-, Word- (.docx), Excel- (.xlsx, .xls) und CSV-Dateien für die KI-Analyse.
 - **🖼️ Vision-Unterstützung:** Analysiert Bilddateien (.png, .jpg, .webp) direkt mit vision-unterstützten KI-Modellen.
-- **🤖 Multi-Modell-Auswahl:** Dynamischer Wechsel zwischen Top-Modellen (StepFun, Qwen, Llama usw.) über die Sidebar.
+- **🤖 Multi-Modell-Auswahl:** Dynamischer Wechsel zwischen kostenlosen Modellen (MiniMax, Nemotron, Cohere North, Gemma usw.) über die Sidebar.
 - **⚙️ Dynamische Systemanweisungen:** Passen Sie die Persönlichkeit und das Verhalten der KI sofort über "System Anweisung" an.
 - **📜 Lokaler Verlauf (History):** Der gesamte Chat-Verlauf wird im Browser-Speicher gesichert; Sitzungen können umbenannt oder verwaltet werden.
 - **🎨 Glassmorphism Design:** Ein modernes, transparentes Premium-UI, das vollständig mit Vanilla CSS entworfen wurde.
 - **🔒 Sicherer Datenfluss:** Der API-Schlüssel bleibt ausschließlich serverseitig (lokal in `server/.env`, in Produktion als Server-Secret — Vercel/Cloudflare). Er gelangt nie in den Browser; Anfragen laufen über einen sicheren Proxy.
-- **🐳 Cloud Ready:** Rund um die Uhr über Hugging Face Spaces dank Docker-Unterstützung erreichbar.
+- **🐳 Cloud Ready:** Frontend auf GitHub Pages, sicherer Proxy auf Vercel — rund um die Uhr erreichbar.
 
 ---
 
@@ -178,7 +182,7 @@ Eine moderne, schnelle und multifunktionale KI-Erfahrung. **GoAI** integriert di
 - **Backend:** [Node.js](https://nodejs.org), [Express.js](https://expressjs.com), Fetch API (native), CORS, dotenv.
 - **Dateiverarbeitung:** [pdfjs-dist](https://mozilla.github.io/pdf.js/) (PDF), [xlsx](https://sheetjs.com) (Excel), [mammoth](https://github.com/mwilliamson/mammoth.js) (Word).
 - **API-Integration:** [OpenRouter AI API](https://openrouter.ai).
-- **DevOps & Deployment:** Docker, GitHub Actions (CI/CD Pipeline), Hugging Face Spaces.
+- **DevOps & Deployment:** Vercel (serverless proxy), GitHub Pages, GitHub Actions (CI/CD), Docker.
 - **UI & Markdown:** [React Markdown](https://github.com/remarkjs/react-markdown), [Highlight.js](https://highlightjs.org).
 
 ---
@@ -190,7 +194,7 @@ Eine moderne, schnelle und multifunktionale KI-Erfahrung. **GoAI** integriert di
 *   **Dynamisches Chat-Erlebnis:** Starten Sie Chats sofort, indem Sie das am besten geeignete Modell für jede Aufgabe auswählen (Code-Erstellung, kreatives Schreiben, Datenanalyse).
 *   **Kontextbezogene Dokumentenanalyse:** Stellen Sie der KI Ihre Dokumente oder Bilder vor, damit sie diese Daten detailliert analysieren kann.
 *   **Anpassbare KI-Identität:** Verwenden Sie das Panel "System Anweisung", um das Fachgebiet und den Gesprächsstil Ihres Assistenten zu konfigurieren.
-*   **Unabhängige Datensicherheit:** Der gesamte Datenverkehr wird über einen lokalen Proxy verwaltet, was die Sicherheit Ihres API-Schlüssels und die schnelle Verarbeitung von Dokumenten gewährleistet.
+*   **Unabhängige Datensicherheit:** Der gesamte Datenverkehr wird über einen sicheren serverseitigen Proxy verwaltet, was die Sicherheit Ihres API-Schlüssels und die schnelle Verarbeitung von Dokumenten gewährleistet.
 
 **Tipps:**
 - **System Prompt:** Legen Sie in der Sidebar fest, wie sich die KI verhalten soll (z.B. "Antworte kurz und bündig").
@@ -203,7 +207,7 @@ Eine moderne, schnelle und multifunktionale KI-Erfahrung. **GoAI** integriert di
 
 #### 1. Serverseite (Backend)
 ```bash
-cd react-ai/server
+cd server
 npm install
 ```
 Erstellen Sie Ihre `server/.env` Datei und fügen Sie Ihren API-Key hinzu:
@@ -217,7 +221,6 @@ node server.js
 #### 2. Clientseite (Frontend)
 In einem neuen Terminal:
 ```bash
-cd react-ai
 npm install
 npm start
 ```
@@ -228,7 +231,12 @@ npm start
 
 ```bash
 react-ai/
-├── server/             # Node.js Proxy-Server
+├── api/                # Vercel Serverless-Proxy (Node.js, /chat)
+│   └── chat.mjs        # OpenRouter-Proxy + :free-Modellschutz
+├── worker/             # Cloudflare Worker (optionaler Proxy)
+│   └── worker.js       # :free-Modell + max_price-0-Schutz
+├── vercel.json         # /chat -> /api/chat Rewrite
+├── server/             # Node.js Proxy-Server (lokale Entwicklung)
 │   ├── server.js       # Hauptserverdatei
 │   └── .env            # API-Key Konfiguration
 ├── src/                # React Frontend
@@ -270,7 +278,7 @@ A modern, fast, and multifunctional AI experience. **GoAI** integrates the most 
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=fff)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)
-![Hugging Face](https://img.shields.io/badge/Hugging%20Face-FFD21E?logo=huggingface&logoColor=black)
+![Vercel](https://img.shields.io/badge/Vercel-%23000000.svg?logo=vercel&logoColor=white)
 ![OpenRouter](https://img.shields.io/badge/OpenRouter-94A3B8?logo=openrouter&logoColor=fff)
 ![Visual Studio Code](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%20Code-0078d7.svg?logo=visualstudiocode&logoColor=white)
 ![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?logo=github&logoColor=white)
@@ -285,12 +293,12 @@ A modern, fast, and multifunctional AI experience. **GoAI** integrates the most 
 
 - **📁 Smart Document Analysis:** Automatically extracts content from PDF, Word (.docx), Excel (.xlsx, .xls), and CSV files for AI analysis.
 - **🖼️ Vision Capabilities:** Directly analyzes image files (.png, .jpg, .webp) using vision-supported AI models.
-- **🤖 Multi-Model Selection:** Dynamically switch between top models (StepFun, Qwen, Llama, etc.) via the sidebar.
+- **🤖 Multi-Model Selection:** Dynamically switch between free models (MiniMax, Nemotron, Cohere North, Gemma, etc.) via the sidebar.
 - **⚙️ Dynamic System Instructions:** Instantly tailor the AI's personality and behavior via the "System Anweisung" panel.
 - **📜 Local History:** All chat history is saved in the browser's storage; sessions can be renamed or managed.
 - **🎨 Glassmorphism Design:** A modern, transparent premium UI designed entirely with Vanilla CSS.
 - **🔒 Secure Data Workflow:** The API key stays server-side only (locally in `server/.env`, in production as a server-side secret — Vercel/Cloudflare). It never reaches the browser; requests go through a secure proxy.
-- **🐳 Cloud Ready:** Accessible 24/7 via Hugging Face Spaces thanks to Docker support.
+- **🐳 Cloud Ready:** Frontend on GitHub Pages, secure proxy on Vercel — accessible 24/7.
 
 ---
 
@@ -300,7 +308,7 @@ A modern, fast, and multifunctional AI experience. **GoAI** integrates the most 
 - **Backend:** [Node.js](https://nodejs.org), [Express.js](https://expressjs.com), Fetch API (native), CORS, dotenv.
 - **File Processing:** [pdfjs-dist](https://mozilla.github.io/pdf.js/) (PDF), [xlsx](https://sheetjs.com) (Excel), [mammoth](https://github.com/mwilliamson/mammoth.js) (Word).
 - **API Integration:** [OpenRouter AI API](https://openrouter.ai).
-- **DevOps & Deployment:** Docker, GitHub Actions (CI/CD Pipeline), Hugging Face Spaces.
+- **DevOps & Deployment:** Vercel (serverless proxy), GitHub Pages, GitHub Actions (CI/CD), Docker.
 - **UI & Markdown:** [React Markdown](https://github.com/remarkjs/react-markdown), [Highlight.js](https://highlightjs.org).
 
 ---
@@ -312,7 +320,7 @@ A modern, fast, and multifunctional AI experience. **GoAI** integrates the most 
 *   **Dynamic Chat Experience:** Start chats instantly by selecting the most suitable model for any task (coding, creative writing, data analysis).
 *   **Contextual Document Analysis:** Introduce your documents or images to the AI to allow for in-depth data analysis.
 *   **Customizable AI Identity:** Use the "System Anweisung" panel to configure your assistant's expertise and speaking style.
-*   **Independent Data Security:** All data traffic is managed through a local proxy, ensuring API key security and fast document processing.
+*   **Independent Data Security:** All data traffic is managed through a secure server-side proxy, ensuring API key security and fast document processing.
 
 **Tips:**
 - **System Prompt:** Set how the AI should behave in the sidebar (e.g., "Give short and concise answers").
@@ -325,7 +333,7 @@ A modern, fast, and multifunctional AI experience. **GoAI** integrates the most 
 
 #### 1. Server Side (Backend)
 ```bash
-cd react-ai/server
+cd server
 npm install
 ```
 Create your `server/.env` file and add your API key:
@@ -339,7 +347,6 @@ node server.js
 #### 2. Client Side (Frontend)
 In a new terminal:
 ```bash
-cd react-ai
 npm install
 npm start
 ```
@@ -350,7 +357,12 @@ npm start
 
 ```bash
 react-ai/
-├── server/             # Node.js Proxy Server
+├── api/                # Vercel serverless proxy (Node.js, /chat)
+│   └── chat.mjs        # OpenRouter proxy + :free model guard
+├── worker/             # Cloudflare Worker (optional proxy)
+│   └── worker.js       # :free model + max_price 0 guard
+├── vercel.json         # /chat -> /api/chat rewrite
+├── server/             # Node.js Proxy Server (local dev)
 │   ├── server.js       # Main server file
 │   └── .env            # API Key configuration
 ├── src/                # React Frontend
