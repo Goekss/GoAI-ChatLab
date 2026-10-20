@@ -91,11 +91,12 @@ export default async function handler(req, res) {
 
     const text = await upstream.text();
 
-    const headers = new Headers(upstream.headers);
-    headers.set("Access-Control-Allow-Origin", origin || ALLOWED_ORIGIN);
-    headers.set("Vary", "Origin");
-
-    res.writeHead(upstream.status, Object.fromEntries(headers.entries()));
+    // Upstream başlıklarını iletme (content-length/encoding çakışması boş gövdeye yol açar);
+    // temiz bir JSON yanıtı dön.
+    res.writeHead(upstream.status, {
+      "Content-Type": "application/json",
+      ...corsHeaders(origin),
+    });
     return res.end(text);
   } catch {
     return send(res, 502, origin, { error: "Proxy upstream error" });
