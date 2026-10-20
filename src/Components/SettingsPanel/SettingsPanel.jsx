@@ -5,7 +5,7 @@ import { PiPencilSimpleLine } from "react-icons/pi";
 import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { FiChevronDown } from "react-icons/fi";
 import { useState } from "react";
-import { getApiKey, saveApiKey, MODEL_OPTIONS } from "../../aiService/aiService";
+import { MODEL_OPTIONS } from "../../aiService/aiService";
 
 export default function SettingsPanel({
   model,
@@ -26,7 +26,6 @@ export default function SettingsPanel({
 }) {
 
 const [openHistory, setOpenHistory] = useState(true);
-const [apiKey, setApiKey] = useState(() => getApiKey());
 
 return (
 <div className="settingsPanel">
@@ -73,25 +72,6 @@ Alles für
   ))}
 </select>
 
-
-</div>
-
-{/* OPENROUTER API KEY (OPSIYONEL) */}
-
-<div className="field">
-<label>OpenRouter API Key (Opsiyonel)</label>
-
-<input
-  type="password"
-  value={apiKey}
-  onChange={(e) => { setApiKey(e.target.value); saveApiKey(e.target.value); }}
-  placeholder="Kendi anahtarınız varsa..."
-  autoComplete="off"
-/>
-
-<p style={{ fontSize: 11, opacity: 0.7, margin: "6px 0 0", lineHeight: 1.4 }}>
-  Gerek yok — hazır anahtar otomatik kullanılır. Sadece kendi OpenRouter hesabınızı kullanmak isterseniz girin.
-</p>
 
 </div>
 
