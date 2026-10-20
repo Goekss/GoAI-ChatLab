@@ -7,6 +7,7 @@
  */
 
 const OR_API_URL = "https://openrouter.ai/api/v1/chat/completions";
+const PROXY_URL = process.env.REACT_APP_OPENROUTER_PROXY_URL?.trim() || "";
 const API_KEY_STORAGE = "goai_openrouter_api_key";
 
 export const AUTO_MODEL = "auto";
@@ -50,16 +51,6 @@ export function getApiKey() {
   return process.env.REACT_APP_OPENROUTER_API_KEY?.trim() || "";
 }
 
-export function saveApiKey(key) {
-  try {
-    if (typeof window !== "undefined" && window.localStorage) {
-      window.localStorage.setItem(API_KEY_STORAGE, (key || "").trim());
-    }
-  } catch {
-    /* yoksay */
-  }
-}
-
 function buildMessages({ systemPrompt, messages, userText }) {
   const payload = [];
 
@@ -97,10 +88,11 @@ function retriableStatus(code) {
 }
 
 export async function sendenChatMessage({ model, systemPrompt, messages, userText, signal }) {
+  const useProxy = Boolean(PROXY_URL);
   const apiKey = getApiKey();
 
-  if (!apiKey) {
-    throw new Error("Sunucu tarafında API anahtarı bulunamadı. Site yöneticisine başvurun veya Ayarlar'dan kendi anahtarınızı girin.");
+  if (!useProxy && !apiKey) {
+    throw new Error("API anahtarı yapılandırılmamış.");
   }
 
   const payloadMessages = buildMessages({ systemPrompt, messages, userText });
@@ -113,13 +105,14 @@ export async function sendenChatMessage({ model, systemPrompt, messages, userTex
 
   for (const candidate of candidates) {
     try {
-      const response = await fetch(OR_API_URL, {
+      const endpoint = useProxy ? `${PROXY_URL}/chat` : OR_API_URL;
+      const headers = { "Content-Type": "application/json" };
+      if (!useProxy) headers.Authorization = `Bearer ${apiKey}`;
+
+      const response = await fetch(endpoint, {
         method: "POST",
         signal,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
+        headers,
         body: JSON.stringify({ model: candidate, messages: payloadMessages }),
       });
 
@@ -131,7 +124,7 @@ export async function sendenChatMessage({ model, systemPrompt, messages, userTex
       }
 
       if (response.status === 401) {
-        throw new Error("API anahtarı geçersiz. Lütfen Ayarlar'dan anahtarı kontrol edin.");
+        throw new Error("OpenRouter anahtarı geçersiz (sunucu tarafı).");
       }
       if (response.status === 402) {
         throw new Error("OpenRouter hesabında kredi yetersiz.");
