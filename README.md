@@ -45,7 +45,7 @@ Modern, hızlı ve çok fonksiyonlu bir yapay zeka deneyimi. **GoAI**, OpenRoute
 - **⚙️ Dinamik Sistem Talimatları:** AI'nın kişiliğini ve davranışını anlık olarak "System Anweisung" üzerinden yapılandırabilme.
 - **📜 Yerel Hafıza (History):** Tüm sohbet geçmişi tarayıcı hafızasında saklanır; oturumları isimlendirebilir veya yönetebilirsiniz.
 - **🎨 Glassmorphism Tasarım:** Vanilla CSS ile tasarlanmış, modern, şeffaf ve premium bir kullanıcı arayüzü.
-- **🔒 Güvenli Veri Akışı:** API anahtarlarınızı korumak için tasarlanmış bağımsız Node.js Proxy sunucusu.
+- **🔒 Güvenli Veri Akışı:** API anahtarı yalnızca sunucu tarafında tutulur (yerel `server/.env`, üretimde sunucu-tarafı secret — Vercel/Cloudflare). Tarayıcıya asla inmez; istekler güvenli proxy üzerinden iletilir.
 - **🐳 Bulut Hazır:** Docker desteği sayesinde Hugging Face Spaces üzerinden 7/24 erişilebilir.
 
 ---
@@ -167,7 +167,7 @@ Eine moderne, schnelle und multifunktionale KI-Erfahrung. **GoAI** integriert di
 - **⚙️ Dynamische Systemanweisungen:** Passen Sie die Persönlichkeit und das Verhalten der KI sofort über "System Anweisung" an.
 - **📜 Lokaler Verlauf (History):** Der gesamte Chat-Verlauf wird im Browser-Speicher gesichert; Sitzungen können umbenannt oder verwaltet werden.
 - **🎨 Glassmorphism Design:** Ein modernes, transparentes Premium-UI, das vollständig mit Vanilla CSS entworfen wurde.
-- **🔒 Sicherer Datenfluss:** Unabhängiger Node.js-Proxy-Server zum Schutz Ihrer API-Schlüssel.
+- **🔒 Sicherer Datenfluss:** Der API-Schlüssel bleibt ausschließlich serverseitig (lokal in `server/.env`, in Produktion als Server-Secret — Vercel/Cloudflare). Er gelangt nie in den Browser; Anfragen laufen über einen sicheren Proxy.
 - **🐳 Cloud Ready:** Rund um die Uhr über Hugging Face Spaces dank Docker-Unterstützung erreichbar.
 
 ---
@@ -289,7 +289,7 @@ A modern, fast, and multifunctional AI experience. **GoAI** integrates the most 
 - **⚙️ Dynamic System Instructions:** Instantly tailor the AI's personality and behavior via the "System Anweisung" panel.
 - **📜 Local History:** All chat history is saved in the browser's storage; sessions can be renamed or managed.
 - **🎨 Glassmorphism Design:** A modern, transparent premium UI designed entirely with Vanilla CSS.
-- **🔒 Secure Data Workflow:** Independent Node.js Proxy server designed to protect your API keys.
+- **🔒 Secure Data Workflow:** The API key stays server-side only (locally in `server/.env`, in production as a server-side secret — Vercel/Cloudflare). It never reaches the browser; requests go through a secure proxy.
 - **🐳 Cloud Ready:** Accessible 24/7 via Hugging Face Spaces thanks to Docker support.
 
 ---

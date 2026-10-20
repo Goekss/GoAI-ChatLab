@@ -35,7 +35,6 @@ jobs:
       - name: Build
         env:
           REACT_APP_OPENROUTER_PROXY_URL: ${{ secrets.OPENROUTER_PROXY_URL }}
-          REACT_APP_OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: CI=false DISABLE_ESLINT_PLUGIN=true npm run build
 
       - name: Setup Pages

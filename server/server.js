@@ -14,30 +14,67 @@ const indexPath = path.join(buildPath, "index.html");
 
 const app = express();
 
-app.use(cors());
+// CORS: yalnızca kendi frontend originlerimize izin ver (varsayılan: yerel dev + GitHub Pages).
+// Aynı origin'den gelen isteklerde Origin başlığı bulunmaz, bu yüzden `!origin` durumuna izin verilir.
+const ALLOWED_ORIGINS = new Set(
+  (process.env.CORS_ORIGIN || "http://localhost:3000,https://goekss.github.io")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+);
+
+app.use(
+  cors({
+    origin(origin, cb) {
+      if (!origin || ALLOWED_ORIGINS.has(origin)) return cb(null, true);
+      return cb(null, false);
+    },
+  })
+);
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
+// Basit bellek-içi istek sınırlayıcı (IP başına) — açık relay kötüye kullanımını sınırlar.
+const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS) || 60_000;
+const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX) || 30;
+const rateHits = new Map();
+
+function rateLimiter(req, res, next) {
+  const ip =
+    req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    req.socket?.remoteAddress ||
+    "unknown";
+  const now = Date.now();
+  const hits = (rateHits.get(ip) || []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  hits.push(now);
+  rateHits.set(ip, hits);
+  if (hits.length > RATE_LIMIT_MAX) {
+    return res.status(429).json({ error: "Too many requests. Please slow down." });
+  }
+  next();
+}
+
 const API_KEY = process.env.OPENROUTER_API_KEY;
-const FREE_MODELS = new Set([
-  "qwen/qwen3.8-27b:free",
-  "nvidia/nemotron-3.5-lightning:free",
-  "inclusionai/ling-3.0-flash-sante:free",
-]);
+
+// Yalnızca ücretsiz (`:free`) modellere izin verilir.
+// Ek güvence: provider.max_price = 0 ile faturalama kötüye kullanımı engellenir.
+function isFreeModel(model) {
+  return typeof model === "string" && model.trim().length > 0 && model.endsWith(":free");
+}
 
 // Build varsa static yayınla
 if (!process.env.VERCEL && fs.existsSync(buildPath)) {
   app.use(express.static(buildPath));
 }
 
-app.post(["/chat", "/api/chat"], async (req, res) => {
+app.post(["/chat", "/api/chat"], rateLimiter, async (req, res) => {
   try {
     if (!API_KEY) {
       return res.status(500).json({ error: "OPENROUTER_API_KEY not configured on server" });
     }
     const { model, systemPrompt, messages = [], userText } = req.body;
-    if (!FREE_MODELS.has(model)) {
-      return res.status(400).json({ error: "Only the three approved free models are allowed." });
+    if (!isFreeModel(model)) {
+      return res.status(400).json({ error: "Only free models are allowed." });
     }
     const payloadMessages = [];
 

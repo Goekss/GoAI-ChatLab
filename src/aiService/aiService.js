@@ -1,14 +1,14 @@
 /**
- * OpenRouter API'sine doğrudan (client-side) istek gönderen servis.
- * Backend/proxy gerekmez; GitHub Pages gibi statik hostlarda da çalışır.
+ * OpenRouter'a YALNIZCA güvenli sunucu proxy'si üzerinden istek gönderen servis
+ * (üretimde Cloudflare Worker, yerel geliştirmede Express sunucusu).
  *
- * API anahtarı önce kullanıcının tarayıcısından (localStorage) okunur,
- * yoksa derleme zamanı REACT_APP_OPENROUTER_API_KEY kullanılır.
+ * API anahtarı tarayıcıya asla inmez; sadece proxy'de durur
+ * (server/.env veya Worker secret OPENROUTER_API_KEY).
  */
 
-const OR_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const PROXY_URL = process.env.REACT_APP_OPENROUTER_PROXY_URL?.trim() || "";
-const API_KEY_STORAGE = "goai_openrouter_api_key";
+const PROXY_URL =
+  process.env.REACT_APP_OPENROUTER_PROXY_URL?.trim() ||
+  (process.env.NODE_ENV === "development" ? "http://localhost:3001" : "");
 
 export const AUTO_MODEL = "auto";
 export const DEFAULT_MODEL = AUTO_MODEL;
@@ -38,18 +38,6 @@ const VISION_FALLBACK = [
   "google/gemma-4-31b-it:free",
   "google/gemma-4-26b-a4b-it:free",
 ];
-
-export function getApiKey() {
-  try {
-    if (typeof window !== "undefined" && window.localStorage) {
-      const stored = window.localStorage.getItem(API_KEY_STORAGE);
-      if (stored && stored.trim()) return stored.trim();
-    }
-  } catch {
-    /* yoksay */
-  }
-  return process.env.REACT_APP_OPENROUTER_API_KEY?.trim() || "";
-}
 
 function buildMessages({ systemPrompt, messages, userText }) {
   const payload = [];
@@ -88,11 +76,10 @@ function retriableStatus(code) {
 }
 
 export async function sendenChatMessage({ model, systemPrompt, messages, userText, signal }) {
-  const useProxy = Boolean(PROXY_URL);
-  const apiKey = getApiKey();
-
-  if (!useProxy && !apiKey) {
-    throw new Error("API anahtarı yapılandırılmamış.");
+  if (!PROXY_URL) {
+    throw new Error(
+      "Proxy yapılandırılmamış. REACT_APP_OPENROUTER_PROXY_URL ortam değişkenini ayarlayın."
+    );
   }
 
   const payloadMessages = buildMessages({ systemPrompt, messages, userText });
@@ -105,9 +92,8 @@ export async function sendenChatMessage({ model, systemPrompt, messages, userTex
 
   for (const candidate of candidates) {
     try {
-      const endpoint = useProxy ? `${PROXY_URL}/chat` : OR_API_URL;
+      const endpoint = `${PROXY_URL}/chat`;
       const headers = { "Content-Type": "application/json" };
-      if (!useProxy) headers.Authorization = `Bearer ${apiKey}`;
 
       const response = await fetch(endpoint, {
         method: "POST",
