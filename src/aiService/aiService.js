@@ -9,9 +9,11 @@
 const OR_API_URL = "https://openrouter.ai/api/v1/chat/completions";
 const API_KEY_STORAGE = "goai_openrouter_api_key";
 
-export const DEFAULT_MODEL = "minimax/minimax-m3.1-flash:free";
+export const AUTO_MODEL = "auto";
+export const DEFAULT_MODEL = AUTO_MODEL;
 
 export const MODEL_OPTIONS = [
+  { id: AUTO_MODEL, label: "Otomatik (Auto) - Free" },
   { id: "minimax/minimax-m3.1-flash:free", label: "MiniMax M3.1 Flash - Free" },
   { id: "nvidia/nemotron-3.5-lightning:free", label: "Nemotron 3.5 Lightning - Free" },
   { id: "cohere/north-mini-code:free", label: "North Mini Code - Free" },
@@ -103,7 +105,7 @@ export async function sendenChatMessage({ model, systemPrompt, messages, userTex
 
   const payloadMessages = buildMessages({ systemPrompt, messages, userText });
   const fallback = hasImageBlocks(userText) ? VISION_FALLBACK : TEXT_FALLBACK;
-  const candidates = [model, ...fallback].filter(
+  const candidates = (model && model !== AUTO_MODEL ? [model, ...fallback] : fallback).filter(
     (m, i, arr) => m && arr.indexOf(m) === i
   );
 
