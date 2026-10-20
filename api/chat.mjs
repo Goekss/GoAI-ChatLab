@@ -86,7 +86,7 @@ export default async function handler(req, res) {
         messages,
         provider: { max_price: { prompt: 0, completion: 0 } },
       }),
-      signal: AbortSignal.timeout(55_000),
+      signal: AbortSignal.timeout(59_000),
     });
 
     const text = await upstream.text();
