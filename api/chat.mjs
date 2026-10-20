@@ -73,11 +73,14 @@ export default async function handler(request) {
       }),
     });
 
+    // Yanıtı buffer'la (uygulama zaten tam JSON bekliyor, akış kullanmıyor).
+    const text = await upstream.text();
+
     const headers = new Headers(upstream.headers);
     headers.set("Access-Control-Allow-Origin", origin || ALLOWED_ORIGIN);
     headers.set("Vary", "Origin");
 
-    return new Response(upstream.body, {
+    return new Response(text, {
       status: upstream.status,
       statusText: upstream.statusText,
       headers,
