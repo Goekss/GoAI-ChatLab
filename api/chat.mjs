@@ -1,5 +1,7 @@
-// Vercel serverless proxy — OpenRouter'a yalnızca ücretsiz (`:free`) modellerle istek iletir.
+// Vercel Edge proxy — OpenRouter'a yalnızca ücretsiz (`:free`) modellerle istek iletir.
 // API anahtarı Vercel ortam değişkeninde (OPENROUTER_API_KEY) tutulur; tarayıcıya asla inmez.
+
+export const config = { runtime: "edge" };
 
 const UPSTREAM = "https://openrouter.ai/api/v1/chat/completions";
 const ALLOWED_ORIGIN = process.env.CORS_ORIGIN || "https://goekss.github.io";
@@ -13,62 +15,48 @@ function corsHeaders(origin) {
   };
 }
 
-function send(res, status, origin, body) {
-  res.writeHead(status, { "Content-Type": "application/json", ...corsHeaders(origin) });
-  res.end(JSON.stringify(body));
-}
-
-function readBody(req) {
-  return new Promise((resolve, reject) => {
-    let raw = "";
-    req.on("data", (chunk) => {
-      raw += chunk;
-      if (raw.length > 10_000_000) {
-        reject(new Error("Body too large"));
-        req.destroy();
-      }
-    });
-    req.on("end", () => resolve(raw));
-    req.on("error", reject);
+function json(body, status, origin) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json", ...corsHeaders(origin) },
   });
 }
 
-export default async function handler(req, res) {
-  const origin = req.headers.origin || "";
+export default async function handler(request) {
+  const origin = request.headers.get("origin") || "";
 
-  if (req.method === "OPTIONS") {
-    res.writeHead(204, corsHeaders(origin));
-    return res.end();
+  if (request.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: corsHeaders(origin) });
   }
 
-  if (req.method !== "POST") {
-    return send(res, 405, origin, { error: "Method not allowed" });
+  if (request.method !== "POST") {
+    return json({ error: "Method not allowed" }, 405, origin);
   }
 
   if (origin && origin !== ALLOWED_ORIGIN) {
-    return send(res, 403, origin, { error: "Forbidden origin" });
+    return json({ error: "Forbidden origin" }, 403, origin);
   }
 
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
-    return send(res, 500, origin, { error: "OPENROUTER_API_KEY not configured" });
+    return json({ error: "OPENROUTER_API_KEY not configured" }, 500, origin);
   }
 
   let body;
   try {
-    body = JSON.parse(await readBody(req));
+    body = await request.json();
   } catch {
-    return send(res, 400, origin, { error: "Invalid JSON body" });
+    return json({ error: "Invalid JSON body" }, 400, origin);
   }
 
   const { model, messages } = body || {};
 
   if (typeof model !== "string" || !model.trim() || !model.endsWith(":free")) {
-    return send(res, 400, origin, { error: "Only free models are allowed." });
+    return json({ error: "Only free models are allowed." }, 400, origin);
   }
 
   if (!Array.isArray(messages) || messages.length === 0) {
-    return send(res, 400, origin, { error: "messages must be a non-empty array." });
+    return json({ error: "messages must be a non-empty array." }, 400, origin);
   }
 
   try {
@@ -85,17 +73,16 @@ export default async function handler(req, res) {
       }),
     });
 
-    const upstreamHeaders = {};
-    upstream.headers.forEach((value, key) => {
-      upstreamHeaders[key] = value;
-    });
-    upstreamHeaders["Access-Control-Allow-Origin"] = origin || ALLOWED_ORIGIN;
-    upstreamHeaders["Vary"] = "Origin";
+    const headers = new Headers(upstream.headers);
+    headers.set("Access-Control-Allow-Origin", origin || ALLOWED_ORIGIN);
+    headers.set("Vary", "Origin");
 
-    res.writeHead(upstream.status, upstreamHeaders);
-    const text = await upstream.text();
-    return res.end(text);
+    return new Response(upstream.body, {
+      status: upstream.status,
+      statusText: upstream.statusText,
+      headers,
+    });
   } catch {
-    return send(res, 502, origin, { error: "Proxy upstream error" });
+    return json({ error: "Proxy upstream error" }, 502, origin);
   }
 }
