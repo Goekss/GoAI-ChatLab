@@ -3,7 +3,7 @@ import Header from "./Components/Header/Header";
 import SettingsPanel from "./Components/SettingsPanel/SettingsPanel";
 import ChatBox from "./Components/ChatBox/ChatBox";
 import InputArea from "./Components/InputArea/InputArea";
-import{ sendenChatMessage} from "./aiService/aiService";
+import{ sendenChatMessage, DEFAULT_MODEL } from "./aiService/aiService";
 import { GoSidebarExpand } from "react-icons/go";
 import "./theme.css";
 import { PiSidebarLight } from "react-icons/pi";
@@ -12,7 +12,7 @@ import { parseFile } from "./aiService/fileParser";
 
 export default function OpenRouterStreamingChat() {
  
-  const [model, setModel] = useState("qwen/qwen3.8-27b:free");
+  const [model, setModel] = useState(DEFAULT_MODEL);
   const [systemPrompt, setSystemPrompt] = useState("");
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);

@@ -5,6 +5,7 @@ import { PiPencilSimpleLine } from "react-icons/pi";
 import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { FiChevronDown } from "react-icons/fi";
 import { useState } from "react";
+import { getApiKey, saveApiKey, MODEL_OPTIONS } from "../../aiService/aiService";
 
 export default function SettingsPanel({
   model,
@@ -25,6 +26,7 @@ export default function SettingsPanel({
 }) {
 
 const [openHistory, setOpenHistory] = useState(true);
+const [apiKey, setApiKey] = useState(() => getApiKey());
 
 return (
 <div className="settingsPanel">
@@ -66,12 +68,26 @@ Alles für
   value={model}
   onChange={(e) => setModel(e.target.value)}
 >
- 
-  <option value="qwen/qwen3.8-27b:free">Qwen 3.8 27B - Free</option>
-  <option value="nvidia/nemotron-3.5-lightning:free">NVIDIA Nemotron 3.5 Lightning - Free</option>
-  <option value="inclusionai/ling-3.0-flash-sante:free">Ling 3.0 Flash Sante - Free</option>
+  {MODEL_OPTIONS.map((opt) => (
+    <option key={opt.id} value={opt.id}>{opt.label}</option>
+  ))}
 </select>
 
+
+</div>
+
+{/* OPENROUTER API KEY */}
+
+<div className="field">
+<label>OpenRouter API Key</label>
+
+<input
+  type="password"
+  value={apiKey}
+  onChange={(e) => { setApiKey(e.target.value); saveApiKey(e.target.value); }}
+  placeholder="sk-or-..."
+  autoComplete="off"
+/>
 
 </div>
 
