@@ -100,7 +100,7 @@ export async function sendenChatMessage({ model, systemPrompt, messages, userTex
   const apiKey = getApiKey();
 
   if (!apiKey) {
-    throw new Error("OpenRouter API anahtarı eksik. Lütfen Ayarlar'dan anahtarınızı girin.");
+    throw new Error("Sunucu tarafında API anahtarı bulunamadı. Site yöneticisine başvurun veya Ayarlar'dan kendi anahtarınızı girin.");
   }
 
   const payloadMessages = buildMessages({ systemPrompt, messages, userText });

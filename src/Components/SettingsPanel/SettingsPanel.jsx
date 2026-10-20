@@ -76,18 +76,22 @@ Alles für
 
 </div>
 
-{/* OPENROUTER API KEY */}
+{/* OPENROUTER API KEY (OPSIYONEL) */}
 
 <div className="field">
-<label>OpenRouter API Key</label>
+<label>OpenRouter API Key (Opsiyonel)</label>
 
 <input
   type="password"
   value={apiKey}
   onChange={(e) => { setApiKey(e.target.value); saveApiKey(e.target.value); }}
-  placeholder="sk-or-..."
+  placeholder="Kendi anahtarınız varsa..."
   autoComplete="off"
 />
+
+<p style={{ fontSize: 11, opacity: 0.7, margin: "6px 0 0", lineHeight: 1.4 }}>
+  Gerek yok — hazır anahtar otomatik kullanılır. Sadece kendi OpenRouter hesabınızı kullanmak isterseniz girin.
+</p>
 
 </div>
 
