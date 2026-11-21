@@ -8,12 +8,12 @@
 
 import { MessageBlock, ModelOption } from "../types";
 
-interface ApiMessage {
+export interface ApiMessage {
   role: string;
   content: string | MessageBlock[];
 }
 
-interface BuildMessagesArgs {
+export interface BuildMessagesArgs {
   systemPrompt?: string;
   messages?: { role: string; content: string }[];
   userText?: string | MessageBlock[];
@@ -57,7 +57,7 @@ const VISION_FALLBACK = [
   "google/gemma-4-26b-a4b-it:free",
 ];
 
-function buildMessages({ systemPrompt, messages, userText }: BuildMessagesArgs): ApiMessage[] {
+export function buildMessages({ systemPrompt, messages, userText }: BuildMessagesArgs): ApiMessage[] {
   const payload: ApiMessage[] = [];
 
   if (systemPrompt?.trim()) {
@@ -85,11 +85,11 @@ function buildMessages({ systemPrompt, messages, userText }: BuildMessagesArgs):
   return payload;
 }
 
-function hasImageBlocks(userText?: string | MessageBlock[]): boolean {
+export function hasImageBlocks(userText?: string | MessageBlock[]): boolean {
   return Array.isArray(userText) && userText.some((b) => b.type === "image_url");
 }
 
-function retriableStatus(code: number): boolean {
+export function retriableStatus(code: number): boolean {
   return [404, 408, 429, 500, 502, 503, 504].includes(code);
 }
 

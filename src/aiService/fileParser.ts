@@ -38,7 +38,7 @@ export async function parseFile(file: File): Promise<string | null> {
   }
 }
 // PDF'ten metin ayıklama
-async function extractPdfText(file: File): Promise<string> {
+export async function extractPdfText(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
   let fullText = "";
@@ -53,7 +53,7 @@ async function extractPdfText(file: File): Promise<string> {
   return fullText;
 }
 // Excel'den metin ayıklama
-async function extractExcelText(file: File): Promise<string> {
+export async function extractExcelText(file: File): Promise<string> {
   const data = await file.arrayBuffer();
   const workbook = XLSX.read(data);
   let sheetTexts = "";
@@ -66,7 +66,7 @@ async function extractExcelText(file: File): Promise<string> {
   return sheetTexts;
 }
 // Word'den metin ayıklama
-async function extractWordText(file: File): Promise<string> {
+export async function extractWordText(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
   const result = await mammoth.extractRawText({ arrayBuffer });
   return result.value;

@@ -39,7 +39,7 @@ const RATE_LIMIT_WINDOW_MS = Number(process.env.RATE_LIMIT_WINDOW_MS) || 60_000;
 const RATE_LIMIT_MAX = Number(process.env.RATE_LIMIT_MAX) || 30;
 const rateHits = new Map();
 
-function rateLimiter(req, res, next) {
+export function rateLimiter(req, res, next) {
   const ip =
     req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
     req.socket?.remoteAddress ||
@@ -58,7 +58,7 @@ const API_KEY = process.env.OPENROUTER_API_KEY;
 
 // Yalnızca ücretsiz (`:free`) modellere izin verilir.
 // Ek güvence: provider.max_price = 0 ile faturalama kötüye kullanımı engellenir.
-function isFreeModel(model) {
+export function isFreeModel(model) {
   return typeof model === "string" && model.trim().length > 0 && model.endsWith(":free");
 }
 
@@ -80,6 +80,9 @@ app.post(["/chat", "/api/chat"], rateLimiter, async (req, res) => {
     const { model, systemPrompt, messages = [], userText } = req.body;
     if (!isFreeModel(model)) {
       return res.status(400).json({ error: "Only free models are allowed." });
+    }
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({ error: "messages must be a non-empty array." });
     }
     const payloadMessages = [];
 
