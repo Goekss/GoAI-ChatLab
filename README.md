@@ -24,6 +24,7 @@ Modern, hızlı ve çok fonksiyonlu bir yapay zeka deneyimi. **GoAI**, OpenRoute
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-639?logo=css&logoColor=fff)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)
 ![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=fff)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)
 ![Vercel](https://img.shields.io/badge/Vercel-%23000000.svg?logo=vercel&logoColor=white)
@@ -52,7 +53,7 @@ Modern, hızlı ve çok fonksiyonlu bir yapay zeka deneyimi. **GoAI**, OpenRoute
 
 ### 🛠️ Teknoloji Yığını
 
-- **Frontend:** [React 19](https://react.dev), JavaScript (ES6+), HTML5, Vanilla CSS3.
+- **Frontend:** [React 19](https://react.dev), [TypeScript](https://www.typescriptlang.org) (TSX), HTML5, Vanilla CSS3.
 - **Backend:** [Node.js](https://nodejs.org), [Express.js](https://expressjs.com), Fetch API (native), CORS, dotenv.
 - **Dosya İşleme:** [pdfjs-dist](https://mozilla.github.io/pdf.js/) (PDF), [xlsx](https://sheetjs.com) (Excel), [mammoth](https://github.com/mwilliamson/mammoth.js) (Word).
 - **AI Entegrasyonu:** [OpenRouter AI API](https://openrouter.ai).
@@ -106,18 +107,20 @@ npm start
 ```bash
 react-ai/
 ├── api/                # Vercel serverless proxy (Node.js, /chat)
-│   └── chat.mjs        # OpenRouter proxy + :free model koruması
+│   └── chat.mjs        # OpenRouter proxy + :free model koruması (+ /health)
 ├── worker/             # Cloudflare Worker (opsiyonel proxy)
-│   └── worker.js       # :free model + max_price 0 koruması
+│   └── worker.js       # :free model + max_price 0 koruması (+ /health)
 ├── vercel.json         # /chat -> /api/chat yönlendirmesi
 ├── server/             # Node.js Proxy Sunucusu (yerel geliştirme)
-│   ├── server.js       # Ana sunucu dosyası
+│   ├── server.js       # Ana sunucu dosyası (+ /health sağlık kontrolü)
 │   └── .env            # API Key konfigürasyonu
-├── src/                # React Frontend
-│   ├── aiService/      # API servisi ve Dosya İşleme (fileParser.js)
-│   ├── Components/     # React Bileşenleri (ChatBox, Settings, InputArea)
-│   ├── App.js          # Ana uygulama mantığı
+├── src/                # React Frontend (TypeScript)
+│   ├── aiService/      # API servisi ve Dosya İşleme (aiService.ts, fileParser.ts)
+│   ├── Components/     # React Bileşenleri (ChatBox.tsx, Header, InputArea, SettingsPanel)
+│   ├── App.tsx         # Ana uygulama mantığı
+│   ├── types.ts        # Paylaşılan TypeScript tip tanımları
 │   └── theme.css       # Merkezi modern tasarım dosyası
+├── tsconfig.json       # TypeScript derleyici yapılandırması
 └── README.md
 ```
 
@@ -127,7 +130,7 @@ react-ai/
 Bu proje [MIT](LICENSE) lisansı altında korunmaktadır.
 
 **Geliştiren:** [Onur Gökhan Bicer]
-**Versiyon:** 1.2.0 (Multimodal Document Update)
+**Versiyon:** 1.3.0 (TypeScript Migration)
 
 ---
 
@@ -150,6 +153,7 @@ Eine moderne, schnelle und multifunktionale KI-Erfahrung. **GoAI** integriert di
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-639?logo=css&logoColor=fff)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)
 ![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=fff)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)
 ![Vercel](https://img.shields.io/badge/Vercel-%23000000.svg?logo=vercel&logoColor=white)
@@ -178,7 +182,7 @@ Eine moderne, schnelle und multifunktionale KI-Erfahrung. **GoAI** integriert di
 
 ### 🛠️ Technologie-Stack
 
-- **Frontend:** [React 19](https://react.dev), JavaScript (ES6+), HTML5, Vanilla CSS3.
+- **Frontend:** [React 19](https://react.dev), [TypeScript](https://www.typescriptlang.org) (TSX), HTML5, Vanilla CSS3.
 - **Backend:** [Node.js](https://nodejs.org), [Express.js](https://expressjs.com), Fetch API (native), CORS, dotenv.
 - **Dateiverarbeitung:** [pdfjs-dist](https://mozilla.github.io/pdf.js/) (PDF), [xlsx](https://sheetjs.com) (Excel), [mammoth](https://github.com/mwilliamson/mammoth.js) (Word).
 - **API-Integration:** [OpenRouter AI API](https://openrouter.ai).
@@ -232,18 +236,20 @@ npm start
 ```bash
 react-ai/
 ├── api/                # Vercel Serverless-Proxy (Node.js, /chat)
-│   └── chat.mjs        # OpenRouter-Proxy + :free-Modellschutz
+│   └── chat.mjs        # OpenRouter-Proxy + :free-Modellschutz (+ /health)
 ├── worker/             # Cloudflare Worker (optionaler Proxy)
-│   └── worker.js       # :free-Modell + max_price-0-Schutz
+│   └── worker.js       # :free-Modell + max_price-0-Schutz (+ /health)
 ├── vercel.json         # /chat -> /api/chat Rewrite
 ├── server/             # Node.js Proxy-Server (lokale Entwicklung)
-│   ├── server.js       # Hauptserverdatei
+│   ├── server.js       # Hauptserverdatei (+ /health Healthcheck)
 │   └── .env            # API-Key Konfiguration
-├── src/                # React Frontend
-│   ├── aiService/      # API-Service und Dateiverarbeitung (fileParser.js)
-│   ├── Components/     # React-Komponenten (ChatBox, Settings, InputArea)
-│   ├── App.js          # Hauptanwendungslogik
+├── src/                # React Frontend (TypeScript)
+│   ├── aiService/      # API-Service und Dateiverarbeitung (aiService.ts, fileParser.ts)
+│   ├── Components/     # React-Komponenten (ChatBox.tsx, Header, InputArea, SettingsPanel)
+│   ├── App.tsx         # Hauptanwendungslogik
+│   ├── types.ts        # Gemeinsame TypeScript-Typdefinitionen
 │   └── theme.css       # Zentrales modernes Design
+├── tsconfig.json       # TypeScript-Compiler-Konfiguration
 └── README.md
 ```
 
@@ -253,7 +259,7 @@ react-ai/
 Dieses Projekt ist unter der [MIT](LICENSE)-Lizenz geschützt.
 
 **Entwickelt von:** [Onur Gökhan Bicer]
-**Version:** 1.2.0 (Multimodal Document Update)
+**Version:** 1.3.0 (TypeScript Migration)
 
 ---
 
@@ -276,6 +282,7 @@ A modern, fast, and multifunctional AI experience. **GoAI** integrates the most 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-639?logo=css&logoColor=fff)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)
 ![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=fff)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)
 ![Vercel](https://img.shields.io/badge/Vercel-%23000000.svg?logo=vercel&logoColor=white)
@@ -304,7 +311,7 @@ A modern, fast, and multifunctional AI experience. **GoAI** integrates the most 
 
 ### 🛠️ Tech Stack
 
-- **Frontend:** [React 19](https://react.dev), JavaScript (ES6+), HTML5, Vanilla CSS3.
+- **Frontend:** [React 19](https://react.dev), [TypeScript](https://www.typescriptlang.org) (TSX), HTML5, Vanilla CSS3.
 - **Backend:** [Node.js](https://nodejs.org), [Express.js](https://expressjs.com), Fetch API (native), CORS, dotenv.
 - **File Processing:** [pdfjs-dist](https://mozilla.github.io/pdf.js/) (PDF), [xlsx](https://sheetjs.com) (Excel), [mammoth](https://github.com/mwilliamson/mammoth.js) (Word).
 - **API Integration:** [OpenRouter AI API](https://openrouter.ai).
@@ -358,18 +365,20 @@ npm start
 ```bash
 react-ai/
 ├── api/                # Vercel serverless proxy (Node.js, /chat)
-│   └── chat.mjs        # OpenRouter proxy + :free model guard
+│   └── chat.mjs        # OpenRouter proxy + :free model guard (+ /health)
 ├── worker/             # Cloudflare Worker (optional proxy)
-│   └── worker.js       # :free model + max_price 0 guard
+│   └── worker.js       # :free model + max_price 0 guard (+ /health)
 ├── vercel.json         # /chat -> /api/chat rewrite
 ├── server/             # Node.js Proxy Server (local dev)
-│   ├── server.js       # Main server file
+│   ├── server.js       # Main server file (+ /health healthcheck)
 │   └── .env            # API Key configuration
-├── src/                # React Frontend
-│   ├── aiService/      # API service and file processing (fileParser.js)
-│   ├── Components/     # React components (ChatBox, Settings, InputArea)
-│   ├── App.js          # Main application logic
+├── src/                # React Frontend (TypeScript)
+│   ├── aiService/      # API service and file processing (aiService.ts, fileParser.ts)
+│   ├── Components/     # React components (ChatBox.tsx, Header, InputArea, SettingsPanel)
+│   ├── App.tsx         # Main application logic
+│   ├── types.ts        # Shared TypeScript type definitions
 │   └── theme.css       # Central modern design file
+├── tsconfig.json       # TypeScript compiler configuration
 └── README.md
 ```
 
@@ -379,7 +388,7 @@ react-ai/
 This project is protected under the [MIT](LICENSE) license.
 
 **Developed by:** [Onur Gökhan Bicer]
-**Version:** 1.2.0 (Multimodal Document Update)
+**Version:** 1.3.0 (TypeScript Migration)
 
 
 

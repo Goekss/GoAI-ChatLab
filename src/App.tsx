@@ -3,57 +3,55 @@ import Header from "./Components/Header/Header";
 import SettingsPanel from "./Components/SettingsPanel/SettingsPanel";
 import ChatBox from "./Components/ChatBox/ChatBox";
 import InputArea from "./Components/InputArea/InputArea";
-import{ sendenChatMessage, DEFAULT_MODEL } from "./aiService/aiService";
+import { sendenChatMessage, DEFAULT_MODEL } from "./aiService/aiService";
 import { GoSidebarExpand } from "react-icons/go";
 import "./theme.css";
 import { PiSidebarLight } from "react-icons/pi";
 import { parseFile } from "./aiService/fileParser";
+import { Chat, ChatMessage, MessageBlock } from "./types";
 
 
 export default function OpenRouterStreamingChat() {
  
-  const [model, setModel] = useState(DEFAULT_MODEL);
+  const [model, setModel] = useState<string>(DEFAULT_MODEL);
   const [systemPrompt, setSystemPrompt] = useState("");
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
-  const [status, setStatus] = useState("Hazır.");
   const [error, setError] = useState("");
   const [dark, setDark] = useState(true);
-  const [chats, setChats] = useState(() => {
-  const saved = localStorage.getItem("chat_history");
-  return saved ? JSON.parse(saved) : [];
-});
-  const [activeChatId,setActiveChatId] = useState(null);
-  
+  const [chats, setChats] = useState<Chat[]>(() => {
+    const saved = localStorage.getItem("chat_history");
+    return saved ? (JSON.parse(saved) as Chat[]) : [];
+  });
+  const [activeChatId, setActiveChatId] = useState<number | null>(null);
 
-  // ✅ Sidebar state (ChatGPT-like)
+  // Sidebar state (ChatGPT-like)
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const [pendingFiles, setPendingFiles] = useState([]);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
 
-  const [messages, setMessages] = useState(() => {
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
     try {
       const raw = localStorage.getItem("or_react_chat_v1");
-      return raw ? JSON.parse(raw) : [];
+      return raw ? (JSON.parse(raw) as ChatMessage[]) : [];
     } catch {
       return [];
     }
   });
 
-  const chatRef = useRef(null);
-  const abortRef = useRef(null);
+  const chatRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
  // 1. Uygulama ilk açıldığında hiç chat yoksa bir tane "New Chat" oluşturur
 useEffect(() => {
   if (chats.length === 0) {
-    const firstChat = {
+    const firstChat: Chat = {
       id: Date.now(),
       title: "New Chat",
       messages: []
     };
 
     setChats([firstChat]);
-   
   }
 }, [chats.length]);
 
@@ -101,7 +99,7 @@ useEffect(() => {
 
   //6. Close Sidebar on ESC (nice UX)
   useEffect(() => {
-    const onEsc = (e) => {
+    const onEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSidebarOpen(false);
     };
     window.addEventListener("keydown", onEsc);
@@ -122,19 +120,18 @@ useEffect(() => {
   function clearChat() {
     setMessages([]);
     setError("");
-    setStatus("Temizlendi.");
   }
 
-function deleteChat(id) {
+function deleteChat(id: number) {
   setChats(prev => prev.filter(chat => chat.id !== id));
 }
  function newChat() {
 
   if (messages.length > 0) {
 
-    const chat = {
+    const chat: Chat = {
       id: Date.now(),
-      title: messages[0].content.slice(0,40),
+      title: messages[0].content.slice(0, 40),
       messages: messages
     };
 
@@ -152,10 +149,10 @@ function deleteChat(id) {
     if (abortRef.current) abortRef.current.abort();
   }
 
-  function fileToBase64(file) {
+  function fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
+      reader.onload = () => resolve(reader.result as string);
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
@@ -169,9 +166,8 @@ function deleteChat(id) {
 
     setIsSending(true);
     setError("");
-    setStatus("Yazıyor...");
 
-    const userMsg = {
+    const userMsg: ChatMessage = {
       role: "user",
       content: text || "Dosya gönderildi",
       files: pendingFiles.map((f) => ({
@@ -187,7 +183,7 @@ function deleteChat(id) {
       return [...prev, userMsg, { role: "assistant", content: "" }];
     });
 
-    let fileBlocks = [];
+    let fileBlocks: MessageBlock[] = [];
     let extractedTexts = "";
 
     // 🚀 YENİ: Gönderilen dosyaları ayırt ederek işle
@@ -201,7 +197,6 @@ function deleteChat(id) {
         });
       } else {
         // Dökümanları (PDF, Excel, Word) metne çevir
-        setStatus(`${f.name} okunuyor...`);
         const textContent = await parseFile(f);
         if (textContent) {
           extractedTexts += `\n[BELGE: ${f.name}]:\n${textContent}\n`;
@@ -240,7 +235,7 @@ function deleteChat(id) {
         return next;
       });
     } catch (e) {
-      const msg = e?.message || "Fehler aufgetreten";
+      const msg = e instanceof Error ? e.message : "Fehler aufgetreten";
       setMessages((prev) => {
         const next = [...prev];
         for (let i = next.length - 1; i >= 0; i--) {
@@ -252,25 +247,23 @@ function deleteChat(id) {
         return next;
       });
       setError(msg);
-      setStatus("Fehler aufgetreten");
     } finally {
       setIsSending(false);
-      setStatus("bereit.");
       abortRef.current = null;
     }
   }
 
 
-  function addFiles(files) {
+  function addFiles(files: File[]) {
     setPendingFiles((prev) => [...prev, ...files]);
   }
 
-  function loadChat(chat) {
+  function loadChat(chat: Chat) {
   setMessages(chat.messages);
   setActiveChatId(chat.id);
 }
 
-function renameChat(id) {
+function renameChat(id: number) {
 
   const name = prompt("\r Bitte neuen Namen eingeben");
 
@@ -284,7 +277,7 @@ function renameChat(id) {
 }
 
 
-  function removeFile(index) {
+  function removeFile(index: number) {
     setPendingFiles((prev) => prev.filter((_, i) => i !== index));
   }
 
@@ -292,7 +285,7 @@ function renameChat(id) {
     setDark((prev) => !prev);
   }
 
-  function onKeyDown(e) {
+  function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (canSend) onSend();
@@ -336,13 +329,10 @@ function renameChat(id) {
       <SettingsPanel
         model={model}
         setModel={setModel}
-        toggleTheme={toggleTheme}
         systemPrompt={systemPrompt}
         setSystemPrompt={setSystemPrompt}
-        status={status}
         messages={messages}
         clearChat={clearChat}
-        stop={stop}
         isSending={isSending}
         error={error}
         newChat={newChat}

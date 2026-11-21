@@ -4,18 +4,33 @@ import { AiOutlineClear, AiOutlineClose } from "react-icons/ai";
 import { PiPencilSimpleLine } from "react-icons/pi";
 import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { FiChevronDown } from "react-icons/fi";
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { MODEL_OPTIONS } from "../../aiService/aiService";
+import { Chat, ChatMessage } from "../../types";
+
+interface SettingsPanelProps {
+  model: string;
+  setModel: Dispatch<SetStateAction<string>>;
+  systemPrompt: string;
+  setSystemPrompt: Dispatch<SetStateAction<string>>;
+  messages: ChatMessage[];
+  clearChat: () => void;
+  isSending: boolean;
+  error: string;
+  newChat: () => void;
+  chats: Chat[];
+  loadChat: (chat: Chat) => void;
+  deleteChat: (id: number) => void;
+  renameChat: (id: number) => void;
+}
 
 export default function SettingsPanel({
   model,
   setModel,
   systemPrompt,
   setSystemPrompt,
-  status,
   messages,
   clearChat,
-  toggleTheme,
   isSending,
   error,
   newChat,
@@ -23,7 +38,7 @@ export default function SettingsPanel({
   loadChat,
   deleteChat,
   renameChat
-}) {
+}: SettingsPanelProps) {
 
 const [openHistory, setOpenHistory] = useState(true);
 
@@ -99,10 +114,6 @@ placeholder="Kurze und klare Antworten geben."
 <button onClick={clearChat} disabled={isSending}>
 <AiOutlineClear />
 </button>
-
-{/* <button onClick={stop} disabled={!isSending}>
-<BsStopCircle />
-</button> */}
 
 {error && <span className="error">Fehler: {error}</span>}
 

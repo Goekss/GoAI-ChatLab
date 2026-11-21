@@ -1,8 +1,12 @@
 import "./Header.css";
-import {  BsSun, BsMoon } from "react-icons/bs";
+import { BsSun, BsMoon } from "react-icons/bs";
 
+interface HeaderProps {
+  dark: boolean;
+  toggleTheme: () => void;
+}
 
-export default function Header({ dark, toggleTheme }) {
+export default function Header({ dark, toggleTheme }: HeaderProps) {
   return (
     <div className="header-container">
       <button
@@ -13,14 +17,10 @@ export default function Header({ dark, toggleTheme }) {
       >
         {dark ? <BsSun /> : <BsMoon />}
       </button>
-      
+
       <h2 className="header-title">
         Go -  ÆI
       </h2>
-      
-       {/* 
-       ANIMASYONLU YAZI ALANI */}
     </div>
-    
-  )
+  );
 }

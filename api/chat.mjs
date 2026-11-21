@@ -44,6 +44,10 @@ export default async function handler(req, res) {
     return res.end();
   }
 
+  if (req.method === "GET") {
+    return send(res, 200, origin, { status: "ok" });
+  }
+
   if (req.method !== "POST") {
     return send(res, 405, origin, { error: "Method not allowed" });
   }

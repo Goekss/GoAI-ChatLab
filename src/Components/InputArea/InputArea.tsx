@@ -1,7 +1,19 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, ChangeEvent, KeyboardEvent, Dispatch, SetStateAction } from "react";
 import { AiOutlineSend } from "react-icons/ai";
 import { BsPlusSquareDotted, BsStopFill } from "react-icons/bs";
 
+interface InputAreaProps {
+  input: string;
+  setInput: Dispatch<SetStateAction<string>>;
+  onSend: () => void;
+  onKeyDown: (e: KeyboardEvent<HTMLTextAreaElement>) => void;
+  canSend: boolean;
+  stop: () => void;
+  isSending: boolean;
+  onFilesSelected: (files: File[]) => void;
+  selectedFiles?: File[];
+  onRemoveFile: (index: number) => void;
+}
 
 export default function InputArea({
   input,
@@ -14,10 +26,10 @@ export default function InputArea({
   onFilesSelected,
   selectedFiles = [],
   onRemoveFile
-}) {
+}: InputAreaProps) {
 
-  const fileRef = useRef(null);
-  const textareaRef = useRef(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     const el = textareaRef.current;
@@ -31,7 +43,7 @@ export default function InputArea({
     fileRef.current?.click();
   }
 
-  function handleFileChange(e) {
+  function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || []);
     if (files.length) onFilesSelected?.(files);
     e.target.value = "";
@@ -48,7 +60,7 @@ export default function InputArea({
             {selectedFiles.map((f, i) => {
 
               const isImg = f.type.startsWith("image/");
-              const url = isImg ? URL.createObjectURL(f) : null;
+              const url = isImg ? URL.createObjectURL(f) : undefined;
 
               return (
                 <div key={`${f.name}-${i}`} className="fileChip">
@@ -66,7 +78,7 @@ export default function InputArea({
                     />
                   ) : (
                     <strong>
-                      {f.name.split(".").pop().toUpperCase()}
+                      {f.name.split(".").pop()?.toUpperCase()}
                     </strong>
                   )}
 

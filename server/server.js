@@ -67,6 +67,11 @@ if (!process.env.VERCEL && fs.existsSync(buildPath)) {
   app.use(express.static(buildPath));
 }
 
+// Sağlık kontrolü (uptime robotları / platform healthcheck'leri için)
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok", uptime: process.uptime() });
+});
+
 app.post(["/chat", "/api/chat"], rateLimiter, async (req, res) => {
   try {
     if (!API_KEY) {

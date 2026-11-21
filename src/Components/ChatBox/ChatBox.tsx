@@ -1,10 +1,17 @@
+import { RefObject } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/atom-one-dark.css";
 import { BsRobot } from "react-icons/bs";
 import "./ChatBox.css";
+import { ChatMessage } from "../../types";
 
-export default function ChatBox({ messages, chatRef }) {
+interface ChatBoxProps {
+  messages: ChatMessage[];
+  chatRef: RefObject<HTMLDivElement | null>;
+}
+
+export default function ChatBox({ messages, chatRef }: ChatBoxProps) {
 
   return (
     <div ref={chatRef} className="messages">

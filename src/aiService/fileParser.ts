@@ -10,7 +10,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLi
 
 // Dosya tipini algılayan ve içeriğini metne çeviren ana fonksiyon
 
-export async function parseFile(file) {
+export async function parseFile(file: File): Promise<string | null> {
   const type = file.type;
   const name = file.name.toLowerCase();
   try {
@@ -38,20 +38,22 @@ export async function parseFile(file) {
   }
 }
 // PDF'ten metin ayıklama
-async function extractPdfText(file) {
+async function extractPdfText(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
   let fullText = "";
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    const strings = content.items.map(item => item.str);
+    const strings = content.items.map((item) =>
+      "str" in item ? item.str : ""
+    );
     fullText += strings.join(' ') + "\n";
   }
   return fullText;
 }
 // Excel'den metin ayıklama
-async function extractExcelText(file) {
+async function extractExcelText(file: File): Promise<string> {
   const data = await file.arrayBuffer();
   const workbook = XLSX.read(data);
   let sheetTexts = "";
@@ -64,7 +66,7 @@ async function extractExcelText(file) {
   return sheetTexts;
 }
 // Word'den metin ayıklama
-async function extractWordText(file) {
+async function extractWordText(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
   const result = await mammoth.extractRawText({ arrayBuffer });
   return result.value;

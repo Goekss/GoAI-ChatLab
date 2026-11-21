@@ -6,6 +6,24 @@
  * (server/.env veya Worker secret OPENROUTER_API_KEY).
  */
 
+import { MessageBlock, ModelOption } from "../types";
+
+interface ApiMessage {
+  role: string;
+  content: string | MessageBlock[];
+}
+
+interface BuildMessagesArgs {
+  systemPrompt?: string;
+  messages?: { role: string; content: string }[];
+  userText?: string | MessageBlock[];
+}
+
+interface SendChatArgs extends BuildMessagesArgs {
+  model: string;
+  signal?: AbortSignal;
+}
+
 const PROXY_URL =
   process.env.REACT_APP_OPENROUTER_PROXY_URL?.trim() ||
   (process.env.NODE_ENV === "development" ? "http://localhost:3001" : "");
@@ -13,7 +31,7 @@ const PROXY_URL =
 export const AUTO_MODEL = "auto";
 export const DEFAULT_MODEL = AUTO_MODEL;
 
-export const MODEL_OPTIONS = [
+export const MODEL_OPTIONS: ModelOption[] = [
   { id: AUTO_MODEL, label: "Otomatik (Auto) - Free" },
   { id: "minimax/minimax-m3.1-flash:free", label: "MiniMax M3.1 Flash - Free" },
   { id: "nvidia/nemotron-3.5-lightning:free", label: "Nemotron 3.5 Lightning - Free" },
@@ -39,8 +57,8 @@ const VISION_FALLBACK = [
   "google/gemma-4-26b-a4b-it:free",
 ];
 
-function buildMessages({ systemPrompt, messages, userText }) {
-  const payload = [];
+function buildMessages({ systemPrompt, messages, userText }: BuildMessagesArgs): ApiMessage[] {
+  const payload: ApiMessage[] = [];
 
   if (systemPrompt?.trim()) {
     payload.push({ role: "system", content: systemPrompt.trim() });
@@ -67,15 +85,15 @@ function buildMessages({ systemPrompt, messages, userText }) {
   return payload;
 }
 
-function hasImageBlocks(userText) {
-  return Array.isArray(userText) && userText.some((b) => b?.type === "image_url");
+function hasImageBlocks(userText?: string | MessageBlock[]): boolean {
+  return Array.isArray(userText) && userText.some((b) => b.type === "image_url");
 }
 
-function retriableStatus(code) {
+function retriableStatus(code: number): boolean {
   return [404, 408, 429, 500, 502, 503, 504].includes(code);
 }
 
-export async function sendenChatMessage({ model, systemPrompt, messages, userText, signal }) {
+export async function sendenChatMessage({ model, systemPrompt, messages, userText, signal }: SendChatArgs): Promise<string> {
   if (!PROXY_URL) {
     throw new Error(
       "Proxy yapılandırılmamış. REACT_APP_OPENROUTER_PROXY_URL ortam değişkenini ayarlayın."
@@ -88,7 +106,7 @@ export async function sendenChatMessage({ model, systemPrompt, messages, userTex
     (m, i, arr) => m && arr.indexOf(m) === i
   );
 
-  let lastError = null;
+  let lastError: Error | null = null;
 
   for (const candidate of candidates) {
     try {
@@ -145,7 +163,7 @@ export async function sendenChatMessage({ model, systemPrompt, messages, userTex
 
       return content;
     } catch (err) {
-      if (err?.name === "AbortError") {
+      if (err instanceof Error && err.name === "AbortError") {
         throw new Error("İşlem kullanıcı tarafından durduruldu.");
       }
 

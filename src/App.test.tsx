@@ -1,10 +1,11 @@
+import { ReactNode } from 'react';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
 // ESM-only kütüphaneler Jest tarafından transform edilemediği için mock'lanıyor.
 jest.mock('react-markdown', () => {
   const React = require('react');
-  return function MarkdownMock({ children }) {
+  return function MarkdownMock({ children }: { children?: ReactNode }) {
     return React.createElement('div', null, children);
   };
 });
