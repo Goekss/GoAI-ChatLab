@@ -16,7 +16,6 @@ describe("aiService - Unit Tests", () => {
 
   beforeEach(() => {
     jest.resetModules();
-    process.env.NODE_ENV = "test";
     process.env.REACT_APP_OPENROUTER_PROXY_URL = "http://test-proxy";
     aiService = require("./aiService");
   });
